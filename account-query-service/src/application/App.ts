@@ -49,7 +49,7 @@ export default class App {
 
   async listen(): Promise<http.Server> {
     return this.app.listen(this.port, () => {
-      this.logger.info(`Application carrier is running. Listening on http://localhost:${this.port}`);
+      this.logger.info(`Application account-query-service is running. Listening on http://localhost:${this.port}`);
       this.logger.info('Press CTRL+C to exit');
     });
   }

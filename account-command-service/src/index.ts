@@ -15,7 +15,7 @@ const setDatabase = () => {
     region: AppConfig.AWS_REGION,
     credentials: {
       accessKeyId: AppConfig.AWS_ACCESS_KEY_ID,
-      secretAccessKey: AppConfig.AWS_SECRET_ACESS_KEY,
+      secretAccessKey: AppConfig.AWS_SECRET_ACCESS_KEY,
     },
   });
   dynamoose.aws.ddb.set(client);

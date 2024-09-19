@@ -1,7 +1,7 @@
 {
-  "name": "carrier_api",
+  "name": "projection_service",
   "version": "0.0.1",
-  "description": "Carrier API",
+  "description": "Projection Service",
   "main": "src/index.ts",
   "directories": {
     "test": "tests"

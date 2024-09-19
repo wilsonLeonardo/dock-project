@@ -18,7 +18,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
 
   kafka:
-    image: bitnami/kafka:latest
+    image: bitnami/kafka:3.3.2
     restart: on-failure
     ports:
       - 9092:9092
@@ -45,7 +45,7 @@ services:
       retries: 100
 
   zookeeper:
-    image: bitnami/zookeeper:latest
+    image: bitnami/zookeeper:3.9.2
     ports:
       - 2181:2181
     environment:
@@ -64,6 +64,7 @@ services:
       DYNAMO_URI: http://dynamodb:8000
       AWS_ACCESS_KEY_ID: fakeMyKeyId
       AWS_SECRET_ACCESS_KEY: fakeSecretAccessKey
+      AWS_REGION: us-east-1
 
   account-command-service:
     build:
@@ -80,6 +81,7 @@ services:
       KAFKA_TOPIC: account-changes
       AWS_ACCESS_KEY_ID: fakeMyKeyId
       AWS_SECRET_ACCESS_KEY: fakeSecretAccessKey
+      AWS_REGION: us-east-1
 
   projection-service:
     build:
@@ -88,7 +90,7 @@ services:
       kafka:
         condition: service_healthy
       postgres:
-        condition: service_started
+        condition: service_healthy
     environment:
       APPLICATION_NAME: projection-service
       APP_ENVIRONMENT: local
@@ -104,7 +106,8 @@ services:
     build:
       context: ./account-query-service
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       APPLICATION_NAME: account-query-service
       APP_ENVIRONMENT: local
@@ -125,3 +128,10 @@ services:
       - "5432:5432"
     volumes:
       - ./pgsql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./pgsql/pg_hba.conf:/var/lib/foo/pg_hba.conf
+    command: ["postgres", "-c", "hba_file=/var/lib/foo/pg_hba.conf"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d bank"]
+      interval: 1s
+      timeout: 10s
+      retries: 60

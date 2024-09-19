@@ -50,3 +50,8 @@ O Projection Service utiliza as seguintes tabelas:
 ## Estrutura do Projeto
 
 O Projection Service foi projetado para ser modular e desacoplado, facilitando a adição de novas funcionalidades no futuro. Ao utilizar Event Sourcing, o serviço garante que todos os estados das contas possam ser reconstruídos a partir dos eventos, proporcionando auditabilidade e rastreabilidade.
+
+
+## Proposta de evolução
+
+Pensando em evolução, seria bacana criar uma camada de cache (Redis / Elasticache) para evitar que toda consulta bata no banco de dados e assim melhorando a perfomance da aplicação e o tempo de resposta como consequência.

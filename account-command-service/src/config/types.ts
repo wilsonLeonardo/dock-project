@@ -4,7 +4,7 @@ export interface Envs {
   PORT: number;
   DYNAMO_URI: string;
   AWS_REGION: string;
-  AWS_SECRET_ACESS_KEY: string;
+  AWS_SECRET_ACCESS_KEY: string;
   AWS_ACCESS_KEY_ID: string;
   CARRIER_API: string;
   KAFKA_BROKER: string;

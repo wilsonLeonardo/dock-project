@@ -22,7 +22,7 @@ export const AppConfig: Envs = {
 
   AWS_REGION: process.env.AWS_REGION || requiredEnvVar('AWS_REGION'),
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || requiredEnvVar('AWS_ACCESS_KEY_ID'),
-  AWS_SECRET_ACESS_KEY: process.env.AWS_SECRET_ACESS_KEY || requiredEnvVar('AWS_SECRET_ACESS_KEY'),
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || requiredEnvVar('AWS_SECRET_ACCESS_KEY'),
 
   // Carrier
   CARRIER_API: process.env.CARRIER_API || requiredEnvVar('CARRIER_API'),

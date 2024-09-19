@@ -15,7 +15,7 @@ export function requiredEnvVar(varName: string): string | never {
 export const AppConfig: Envs = {
   APPLICATION_NAME: process.env.APPLICATION_NAME || requiredEnvVar('APPLICATION_NAME'),
   APP_ENVIRONMENT: process.env.APP_ENVIRONMENT || 'development',
-  PORT: Number(process.env.APP_PORT || 3002),
+  PORT: Number(process.env.APP_PORT || 3000),
 
   // Database
   DB_NAME: process.env.DB_NAME || requiredEnvVar('DB_NAME'),

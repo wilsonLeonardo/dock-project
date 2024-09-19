@@ -8,6 +8,8 @@ A Dock busca revolucionar o mercado financeiro com uma nova conta digital que pe
 
 A solução foi construída utilizando os padrões de **CQRS (Command Query Responsibility Segregation)** e **Event Sourcing**. Esses conceitos permitem separar as operações de escrita (comandos) das operações de leitura (consultas), resultando em um sistema mais escalável e responsivo.
 
+Uma solução de melhoria, seria adicionar uma camada de cache (Elasticache / Redis) para melhorar a perfomance da aplicação de consulta, uma vez que os dados irão crescer (por exemplo, consulta de extrato). Porém isso exige adição de mais complexidade ao projeto, uma vez que a aplicacação de projeção também seria responsável por manipular o cache.
+
 ### Vantagens de CQRS e Event Sourcing:
 
 1. **Escalabilidade**: O uso de CQRS permite que o sistema escale independentemente para operações de leitura e escrita, o que é crucial em ambientes com alta demanda.

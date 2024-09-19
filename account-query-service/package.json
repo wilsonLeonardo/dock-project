@@ -1,7 +1,7 @@
 {
-  "name": "carrier_api",
+  "name": "account_query_service",
   "version": "0.0.1",
-  "description": "Carrier API",
+  "description": "Account Query Service API",
   "main": "src/index.ts",
   "directories": {
     "test": "tests"
