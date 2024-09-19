@@ -8,8 +8,6 @@ A Dock busca revolucionar o mercado financeiro com uma nova conta digital que pe
 
 A solução foi construída utilizando os padrões de **CQRS (Command Query Responsibility Segregation)** e **Event Sourcing**. Esses conceitos permitem separar as operações de escrita (comandos) das operações de leitura (consultas), resultando em um sistema mais escalável e responsivo.
 
-Uma solução de melhoria, seria adicionar uma camada de cache (Elasticache / Redis) para melhorar a perfomance da aplicação de consulta, uma vez que os dados irão crescer (por exemplo, consulta de extrato). Porém isso exige adição de mais complexidade ao projeto, pois a aplicacação de projeção também seria responsável por manipular o cache.
-
 ### Vantagens de CQRS e Event Sourcing:
 
 1. **Escalabilidade**: O uso de CQRS permite que o sistema escale independentemente para operações de leitura e escrita, o que é crucial em ambientes com alta demanda.
@@ -93,10 +91,12 @@ A arquitetura do sistema é composta pelos seguintes serviços:
 Informações detalhadas sobre os contratos das APIs podem ser encontradas nos README de cada subprojeto:
 
 - [Carrier Service](./carrier-service/README.md)
-- [Account Command Service](./account-command-service/README.md)
-- [Account Query Service](./account-query-service/README.md)
-- [Projection Service](./projection-service/README.md)
+- [Account Command Service](./account-command-service/README.MD)
+- [Account Query Service](./account-query-service/README.MD)
+- [Projection Service](./projection-service/README.MD)
 
 ## Conclusão
 
 A implementação deste sistema de conta digital utilizando CQRS e Event Sourcing não apenas atende aos requisitos de gerenciamento de contas e portadores, mas também proporciona uma base sólida para futuras expansões e melhorias. A abordagem modular e os princípios de design utilizados garantem a manutenibilidade e escalabilidade do sistema.
+
+Uma solução de melhoria, seria adicionar uma camada de cache (Elasticache / Redis) para melhorar a perfomance da aplicação de consulta, uma vez que os dados irão crescer (por exemplo, consulta de extrato). Porém isso exige adição de mais complexidade ao projeto, pois a aplicação de projeção também seria responsável por manipular o cache.
