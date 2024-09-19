@@ -1,0 +1,137 @@
+services:
+  api-gateway:
+    build: api-gateway/.
+    ports:
+      - "3000:3000"
+    depends_on:
+      - account-query-service
+      - account-command-service
+    volumes:
+      - ./api-gateway:/usr/app
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_ACCESS_KEY_ID=fakeMyKeyId
+      - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
+
+  kafka:
+    image: bitnami/kafka:3.3.2
+    restart: on-failure
+    ports:
+      - 9092:9092
+    environment:
+      - KAFKA_CFG_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_NUM_PARTITIONS=3
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "kafka-topics.sh",
+          "--bootstrap-server",
+          "localhost:9092",
+          "--list",
+        ]
+      interval: 2s
+      timeout: 60s
+      retries: 100
+
+  zookeeper:
+    image: bitnami/zookeeper:3.9.2
+    ports:
+      - 2181:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  carrier-service:
+    build:
+      context: ./carrier-service
+    ports:
+      - 3001:3000
+    depends_on:
+      - dynamodb
+    environment:
+      APPLICATION_NAME: carrier
+      APP_ENVIRONMENT: local
+      DYNAMO_URI: http://dynamodb:8000
+      AWS_ACCESS_KEY_ID: fakeMyKeyId
+      AWS_SECRET_ACCESS_KEY: fakeSecretAccessKey
+      AWS_REGION: us-east-1
+
+  account-command-service:
+    build:
+      context: ./account-command-service
+    depends_on:
+      - kafka
+      - dynamodb
+    environment:
+      APPLICATION_NAME: account-command-service
+      APP_ENVIRONMENT: local
+      DYNAMO_URI: http://dynamodb:8000
+      CARRIER_API: http://carrier-service:3000/carrier
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: account-changes
+      AWS_ACCESS_KEY_ID: fakeMyKeyId
+      AWS_SECRET_ACCESS_KEY: fakeSecretAccessKey
+      AWS_REGION: us-east-1
+
+  projection-service:
+    build:
+      context: ./projection-service
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      APPLICATION_NAME: projection-service
+      APP_ENVIRONMENT: local
+      DB_NAME: bank
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: postgres
+      DB_TYPE: postgres
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: account-changes
+
+  account-query-service:
+    build:
+      context: ./account-query-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APPLICATION_NAME: account-query-service
+      APP_ENVIRONMENT: local
+      DB_NAME: bank
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: postgres
+      DB_TYPE: postgres
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: bank
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgsql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./pgsql/pg_hba.conf:/var/lib/foo/pg_hba.conf
+    command: ["postgres", "-c", "hba_file=/var/lib/foo/pg_hba.conf"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d bank"]
+      interval: 1s
+      timeout: 10s
+      retries: 60
