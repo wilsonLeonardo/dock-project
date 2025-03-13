@@ -1,102 +1,102 @@
-# Projeto de Conta Digital Dock
+# Dock Digital Account Project  
 
-## Descrição do Problema
+## Problem Description  
 
-A Dock busca revolucionar o mercado financeiro com uma nova conta digital que permita a seus clientes realizar transações de forma segura e eficiente. O desafio consiste em gerenciar portadores de contas digitais e suas transações, garantindo a integridade e a consistência dos dados, ao mesmo tempo em que oferece uma experiência de usuário fluida.
+Dock aims to revolutionize the financial market with a new digital account that allows its customers to perform transactions securely and efficiently. The challenge is to manage digital account holders and their transactions while ensuring data integrity and consistency, all while providing a seamless user experience.  
 
-## Solução Proposta
+## Proposed Solution  
 
-A solução foi construída utilizando os padrões de **CQRS (Command Query Responsibility Segregation)** e **Event Sourcing**. Esses conceitos permitem separar as operações de escrita (comandos) das operações de leitura (consultas), resultando em um sistema mais escalável e responsivo.
+The solution was built using **CQRS (Command Query Responsibility Segregation)** and **Event Sourcing** patterns. These concepts enable the separation of write operations (commands) from read operations (queries), resulting in a more scalable and responsive system.  
 
-### Vantagens de CQRS e Event Sourcing:
+### Advantages of CQRS and Event Sourcing:  
 
-1. **Escalabilidade**: O uso de CQRS permite que o sistema escale independentemente para operações de leitura e escrita, o que é crucial em ambientes com alta demanda.
-2. **Auditabilidade**: O Event Sourcing armazena todas as mudanças de estado como eventos, permitindo auditoria e rastreabilidade completas.
-3. **Desempenho**: A separação de consultas e comandos permite otimizações específicas para cada tipo de operação, melhorando a performance geral.
-4. **Flexibilidade**: Novas funcionalidades podem ser adicionadas ao sistema sem a necessidade de grandes reestruturações.
+1. **Scalability**: CQRS allows the system to scale independently for read and write operations, which is crucial in high-demand environments.  
+2. **Auditability**: Event Sourcing stores all state changes as events, enabling full auditability and traceability.  
+3. **Performance**: The separation of queries and commands allows for specific optimizations for each type of operation, improving overall performance.  
+4. **Flexibility**: New features can be added to the system without requiring major restructuring.  
 
-## Diagrama de Arquitetura
+## Architecture Diagram  
 
-![Diagrama de Arquitetura](./dock-case-architecture.png)
+![Architecture Diagram](./dock-case-architecture.png)  
 
-## Arquitetura do Sistema
+## System Architecture  
 
-A arquitetura do sistema é composta pelos seguintes serviços:
+The system architecture consists of the following services:  
 
-### 1. Carrier Service
+### 1. Carrier Service  
 
-- **Descrição**: Gerencia os portadores (donos das contas digitais).
-- **Endpoints**:
-  - `POST /carrier/v1/carrier`: Criação de portador.
-  - `DELETE /carrier/v1/carrier/:CPF`: Remoção de portador.
-  - `GET /carrier/v1/carrier/:CPF`: Busca de portador.
+- **Description**: Manages account holders (owners of digital accounts).  
+- **Endpoints**:  
+  - `POST /carrier/v1/carrier`: Create an account holder.  
+  - `DELETE /carrier/v1/carrier/:CPF`: Remove an account holder.  
+  - `GET /carrier/v1/carrier/:CPF`: Retrieve an account holder.  
 
-### 2. Account Command Service
+### 2. Account Command Service  
 
-- **Descrição**: Responsável por processar comandos relacionados às contas, como criação, depósito, saque e fechamento.
-- **Endpoints**:
-  - `POST /account/v1/command/account`: Criação de conta.
-  - `POST /account/v1/command/account/:CPF/deposit`: Depósito em conta.
-  - `POST /account/v1/command/account/:CPF/withdrawn`: Saque de conta.
-  - `POST /account/v1/command/account/:CPF/close`: Fechar conta.
+- **Description**: Handles account-related commands such as creation, deposit, withdrawal, and closure.  
+- **Endpoints**:  
+  - `POST /account/v1/command/account`: Create an account.  
+  - `POST /account/v1/command/account/:CPF/deposit`: Deposit into an account.  
+  - `POST /account/v1/command/account/:CPF/withdrawn`: Withdraw from an account.  
+  - `POST /account/v1/command/account/:CPF/close`: Close an account.  
 
-### 3. Account Query Service
+### 3. Account Query Service  
 
-- **Descrição**: Fornece dados de consulta sobre contas e extratos.
-- **Endpoints**:
-  - `GET /account/v1/query/account/:CPF/details`: Detalhes da conta.
-  - `GET /account/v1/query/account/:CPF/statements`: Extrato da conta.
+- **Description**: Provides query data about accounts and statements.  
+- **Endpoints**:  
+  - `GET /account/v1/query/account/:CPF/details`: Retrieve account details.  
+  - `GET /account/v1/query/account/:CPF/statements`: Retrieve account statements.  
 
-### 4. Projection Service
+### 4. Projection Service  
 
-- **Descrição**: Consome eventos do Kafka e cria projeções das contas e extratos em uma base de dados relacional.
+- **Description**: Consumes events from Kafka and creates projections of accounts and statements in a relational database.  
 
-### 5. API Gateway
+### 5. API Gateway  
 
-- **Descrição**: Encaminha as requisições dos clientes para os serviços apropriados, atuando como um ponto de entrada unificado.
-- **Endpoints**:
-  - `/account/v1/command`: Roteamento para o Account Command Service.
-  - `/account/v1/query`: Roteamento para o Account Query Service.
+- **Description**: Routes client requests to the appropriate services, acting as a unified entry point.  
+- **Endpoints**:  
+  - `/account/v1/command`: Routes to the Account Command Service.  
+  - `/account/v1/query`: Routes to the Account Query Service.  
 
-## Como Executar a Aplicação
+## How to Run the Application  
 
-1. **Clone o repositório**:
-
-   ```bash
-   git clone <URL_DO_REPOSITORIO>
-   ```
-
-2. **Navegue até o diretório do projeto**:
+1. **Clone the repository**:  
 
    ```bash
-   cd <NOME_DO_DIRETORIO>
-   ```
+   git clone <REPOSITORY_URL>
+   ```  
 
-3. **Inicie os serviços utilizando Docker Compose**:
+2. **Navigate to the project directory**:  
+
+   ```bash
+   cd <DIRECTORY_NAME>
+   ```  
+
+3. **Start the services using Docker Compose**:  
    ```bash
    docker-compose up --build
-   ```
+   ```  
 
-### Portas e URLs das APIs
+### API Ports and URLs  
 
-- **API Gateway**: [http://localhost:3000](http://localhost:3000)
-  - Roteamento para os serviços de comando e consulta de contas.
-- **Carrier Service**: [http://localhost:3001](http://localhost:3001)
-- **DynamoDB**: [http://localhost:8000](http://localhost:8000) (para fins de teste)
-- **PostgreSQL**: [http://localhost:5432](http://localhost:5432) (para fins de teste)
-- **Kafka**: [http://localhost:9092](http://localhost:9092) (para fins de teste)
+- **API Gateway**: [http://localhost:3000](http://localhost:3000)  
+  - Routes to the account command and query services.  
+- **Carrier Service**: [http://localhost:3001](http://localhost:3001)  
+- **DynamoDB**: [http://localhost:8000](http://localhost:8000) (for testing purposes)  
+- **PostgreSQL**: [http://localhost:5432](http://localhost:5432) (for testing purposes)  
+- **Kafka**: [http://localhost:9092](http://localhost:9092) (for testing purposes)  
 
-### Documentação das APIs
+### API Documentation  
 
-Informações detalhadas sobre os contratos das APIs podem ser encontradas nos README de cada subprojeto:
+Detailed API contract information can be found in the README files of each subproject:  
 
-- [Carrier Service](./carrier-service/README.md)
-- [Account Command Service](./account-command-service/README.MD)
-- [Account Query Service](./account-query-service/README.MD)
-- [Projection Service](./projection-service/README.MD)
+- [Carrier Service](./carrier-service/README.md)  
+- [Account Command Service](./account-command-service/README.md)  
+- [Account Query Service](./account-query-service/README.md)  
+- [Projection Service](./projection-service/README.md)  
 
-## Conclusão
+## Conclusion  
 
-A implementação deste sistema de conta digital utilizando CQRS e Event Sourcing não apenas atende aos requisitos de gerenciamento de contas e portadores, mas também proporciona uma base sólida para futuras expansões e melhorias. A abordagem modular e os princípios de design utilizados garantem a manutenibilidade e escalabilidade do sistema.
+The implementation of this digital account system using CQRS and Event Sourcing not only meets the requirements for managing accounts and account holders but also provides a solid foundation for future expansions and improvements. The modular approach and design principles ensure system maintainability and scalability.  
 
-Uma solução de melhoria, seria adicionar uma camada de cache (Elasticache / Redis) para melhorar a perfomance da aplicação de consulta, uma vez que os dados irão crescer (por exemplo, consulta de extrato). Porém isso exige adição de mais complexidade ao projeto, pois a aplicação de projeção também seria responsável por manipular o cache.
+An improvement to consider would be adding a caching layer (Elasticache / Redis) to enhance query performance, as data volume will increase over time (e.g., statement queries). However, this would add more complexity to the project, as the projection service would also need to manage the cache.  
